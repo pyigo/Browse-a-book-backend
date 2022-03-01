@@ -20,6 +20,12 @@ public class Users {
 	private String firstname;
 	@Column
 	private String lastname;
+	@Column
+	private String username;
+	@Column
+	private String email;
+	@Column
+	private String password;
 	public int getId() {
 		return id;
 	}
