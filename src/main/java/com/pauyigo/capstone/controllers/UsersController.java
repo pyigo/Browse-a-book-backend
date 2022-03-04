@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pauyigo.capstone.exceptions.ResourceNotFoundException;
 import com.pauyigo.capstone.dto.UserToReturn;
 import com.pauyigo.capstone.models.Users;
 import com.pauyigo.capstone.repositories.UsersRepository;
@@ -24,7 +25,7 @@ public class UsersController {
 	@Autowired
 	private UsersRepository usersRepo;
 
-	@GetMapping("allusers")
+	@GetMapping("users")
 	public List<UserToReturn> getAllusers() {
 		
 		List <Users> dbUsers = usersRepo.findAll();
@@ -47,8 +48,8 @@ public class UsersController {
 
 	// ResponseEntity represents an HTTP response, including headers, body, and
 	// status.
-	@GetMapping("user/{id}")
-	public ResponseEntity<Optional<Users>> getStudentById(@PathVariable int id) {
+	@GetMapping("users/{id}")
+	public ResponseEntity<Optional<Users>> getUserById(@PathVariable int id) {
 
 		Optional<Users> user = usersRepo.findById(id);
 		// .orElseThrow(()-> new ResourceNotFoundException("User not found."));
@@ -56,4 +57,29 @@ public class UsersController {
 
 	}
 
+	@GetMapping("users/username/{username}")
+	public List <Users>getUserByUsername(@PathVariable String username){
+		List<Users> user= usersRepo.findByUsername(username);
+		if(user.isEmpty()) {
+			System.out.println(new ResourceNotFoundException());
+		}
+			return usersRepo.findByUsername(username);
+			
+		}
+	
+	@GetMapping("users/email/{email}")
+	public List <Users>getUserByEmail(@PathVariable String email){
+		List<Users> user= usersRepo.findByEmail(email);
+		if(user.isEmpty()) {
+			System.out.println(new ResourceNotFoundException());
+		}
+			return usersRepo.findByEmail(email);
+			
+		}
+	
+	
+	
+	
+	
 }
+

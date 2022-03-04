@@ -11,6 +11,9 @@ import com.pauyigo.capstone.models.Users;
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Integer> {
 
-	
+	List<Users> findByUsername(String username);	
 	List<Users> findByFirstname(String firstname);
+	List<Users> findByEmail(String email);
+
+	
 }
