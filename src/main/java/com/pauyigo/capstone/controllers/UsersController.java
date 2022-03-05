@@ -2,6 +2,7 @@ package com.pauyigo.capstone.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pauyigo.capstone.exceptions.EmailExistsException;
 import com.pauyigo.capstone.exceptions.ResourceNotFoundException;
 import com.pauyigo.capstone.dto.UserToReturn;
 import com.pauyigo.capstone.models.User;
@@ -37,7 +39,6 @@ public class UsersController {
 			userToReturn.setId(dbuser.getId());
 			userToReturn.setFirstname(dbuser.getFirstname());
 			userToReturn.setLastname(dbuser.getLastname());
-			userToReturn.setUsername(dbuser.getUsername());
 			userToReturn.setEmail(dbuser.getEmail());
 
 			usersToReturn.add(userToReturn);
@@ -57,27 +58,9 @@ public class UsersController {
 		userToReturn.setId(user.getId());
 		userToReturn.setFirstname(user.getFirstname());
 		userToReturn.setLastname(user.getLastname());
-		userToReturn.setUsername(user.getUsername());
 		userToReturn.setEmail(user.getEmail());
 
 		return ResponseEntity.ok(userToReturn);
-	}
-
-	@GetMapping("users/username/{username}")
-	public ResponseEntity<UserToReturn> getUserByUsername(@PathVariable String username) {
-
-		User user = usersRepo.findByUsername(username)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found."));
-
-		UserToReturn userToReturn = new UserToReturn();
-		userToReturn.setId(user.getId());
-		userToReturn.setFirstname(user.getFirstname());
-		userToReturn.setLastname(user.getLastname());
-		userToReturn.setUsername(user.getUsername());
-		userToReturn.setEmail(user.getEmail());
-
-		return ResponseEntity.ok(userToReturn);
-
 	}
 
 	@GetMapping("users/email/{email}")
@@ -87,17 +70,21 @@ public class UsersController {
 		userToReturn.setId(user.getId());
 		userToReturn.setFirstname(user.getFirstname());
 		userToReturn.setLastname(user.getLastname());
-		userToReturn.setUsername(user.getUsername());
 		userToReturn.setEmail(user.getEmail());
 
 		return ResponseEntity.ok(userToReturn);
 
 	}
-	
+
 	@PostMapping("users")
 	public User newUser(@RequestBody User user) {
+		Optional<User> existingUser = usersRepo.findByEmail(user.getEmail());
+		if (!existingUser.isEmpty()) {
+			throw new EmailExistsException("An account with this email:" + user.getEmail() + " already exists ");
+
+		}
 		return usersRepo.save(user);
-		
+
 	}
 
 }

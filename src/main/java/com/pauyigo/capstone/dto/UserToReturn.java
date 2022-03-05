@@ -9,7 +9,6 @@ public class UserToReturn {
 	
 	private String lastname;
 
-	private String username;
 	
 	public int getId() {
 		return id;
@@ -33,14 +32,6 @@ public class UserToReturn {
 
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
 	}
 
 	public String getEmail() {
