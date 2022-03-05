@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pauyigo.capstone.exceptions.EmailExistsException;
+import com.pauyigo.capstone.exceptions.InvalidCredentialsException;
 import com.pauyigo.capstone.exceptions.ResourceNotFoundException;
 import com.pauyigo.capstone.dto.UserLogin;
 import com.pauyigo.capstone.dto.UserToReturn;
@@ -94,8 +97,12 @@ public class UsersController {
 	}
 	
 	@PostMapping("users/login")
-	public ResponseEntity<UserToReturn> login(@RequestBody UserLogin userLogin){
-		User user = usersRepo.findByEmail(userLogin.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+	public ResponseEntity<UserToReturn> login(@RequestBody @Valid UserLogin userLogin){
+		User user = usersRepo.findByEmail(userLogin.getEmail()).orElseThrow(() -> new InvalidCredentialsException("Please enter valid credentials"));
+		
+		if (!user.getPassword().equals(userLogin.getPassword())) {
+			throw new InvalidCredentialsException("Please enter valid credentials");
+		}
 		
 		UserToReturn userToReturn = new UserToReturn();
 		userToReturn.setId(user.getId());
