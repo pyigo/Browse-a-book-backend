@@ -3,19 +3,20 @@ package com.pauyigo.capstone.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pauyigo.capstone.exceptions.ResourceNotFoundException;
 import com.pauyigo.capstone.dto.UserToReturn;
-import com.pauyigo.capstone.models.Users;
-import com.pauyigo.capstone.repositories.UsersRepository;
+import com.pauyigo.capstone.models.User;
+import com.pauyigo.capstone.repositories.UserRepository;
 
 @CrossOrigin
 @RestController
@@ -23,15 +24,15 @@ import com.pauyigo.capstone.repositories.UsersRepository;
 public class UsersController {
 
 	@Autowired
-	private UsersRepository usersRepo;
+	private UserRepository usersRepo;
 
 	@GetMapping("users")
 	public List<UserToReturn> getAllusers() {
 
-		List<Users> dbUsers = usersRepo.findAll();
+		List<User> dbUsers = usersRepo.findAll();
 		List<UserToReturn> usersToReturn = new ArrayList<>();
 
-		for (Users dbuser : dbUsers) {
+		for (User dbuser : dbUsers) {
 			UserToReturn userToReturn = new UserToReturn();
 			userToReturn.setId(dbuser.getId());
 			userToReturn.setFirstname(dbuser.getFirstname());
@@ -50,9 +51,8 @@ public class UsersController {
 	@GetMapping("users/{id}")
 	public ResponseEntity<UserToReturn> getUserById(@PathVariable int id) {
 
-		Users user = usersRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found."));
-		
+		User user = usersRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
 		UserToReturn userToReturn = new UserToReturn();
 		userToReturn.setId(user.getId());
 		userToReturn.setFirstname(user.getFirstname());
@@ -65,10 +65,10 @@ public class UsersController {
 
 	@GetMapping("users/username/{username}")
 	public ResponseEntity<UserToReturn> getUserByUsername(@PathVariable String username) {
-		
-		Users user = usersRepo.findByUsername(username)	
+
+		User user = usersRepo.findByUsername(username)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found."));
-		
+
 		UserToReturn userToReturn = new UserToReturn();
 		userToReturn.setId(user.getId());
 		userToReturn.setFirstname(user.getFirstname());
@@ -82,8 +82,7 @@ public class UsersController {
 
 	@GetMapping("users/email/{email}")
 	public ResponseEntity<UserToReturn> getUserByEmail(@PathVariable String email) {
-		Users user = usersRepo.findByEmail(email)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found."));
+		User user = usersRepo.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found."));
 		UserToReturn userToReturn = new UserToReturn();
 		userToReturn.setId(user.getId());
 		userToReturn.setFirstname(user.getFirstname());
@@ -93,6 +92,12 @@ public class UsersController {
 
 		return ResponseEntity.ok(userToReturn);
 
+	}
+	
+	@PostMapping("users")
+	public User newUser(@RequestBody User user) {
+		return usersRepo.save(user);
+		
 	}
 
 }
