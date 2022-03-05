@@ -77,13 +77,20 @@ public class UsersController {
 	}
 
 	@PostMapping("users")
-	public User newUser(@RequestBody User user) {
+	public ResponseEntity<UserToReturn>  newUser(@RequestBody User user) {
 		Optional<User> existingUser = usersRepo.findByEmail(user.getEmail());
 		if (!existingUser.isEmpty()) {
 			throw new EmailExistsException("An account with this email:" + user.getEmail() + " already exists ");
 
 		}
-		return usersRepo.save(user);
+		user = usersRepo.save(user);
+		UserToReturn userToReturn = new UserToReturn();
+		userToReturn.setId(user.getId());
+		userToReturn.setFirstname(user.getFirstname());
+		userToReturn.setLastname(user.getLastname());
+		userToReturn.setEmail(user.getEmail());
+
+		return ResponseEntity.ok(userToReturn);
 
 	}
 
