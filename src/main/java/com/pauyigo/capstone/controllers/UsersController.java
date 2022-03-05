@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pauyigo.capstone.exceptions.EmailExistsException;
 import com.pauyigo.capstone.exceptions.ResourceNotFoundException;
+import com.pauyigo.capstone.dto.UserLogin;
 import com.pauyigo.capstone.dto.UserToReturn;
 import com.pauyigo.capstone.models.User;
 import com.pauyigo.capstone.repositories.UserRepository;
@@ -73,11 +74,10 @@ public class UsersController {
 		userToReturn.setEmail(user.getEmail());
 
 		return ResponseEntity.ok(userToReturn);
-
 	}
 
 	@PostMapping("users")
-	public ResponseEntity<UserToReturn>  newUser(@RequestBody User user) {
+	public ResponseEntity<UserToReturn> newUser(@RequestBody User user) {
 		Optional<User> existingUser = usersRepo.findByEmail(user.getEmail());
 		if (!existingUser.isEmpty()) {
 			throw new EmailExistsException("An account with this email:" + user.getEmail() + " already exists ");
@@ -91,7 +91,19 @@ public class UsersController {
 		userToReturn.setEmail(user.getEmail());
 
 		return ResponseEntity.ok(userToReturn);
+	}
+	
+	@PostMapping("users/login")
+	public ResponseEntity<UserToReturn> login(@RequestBody UserLogin userLogin){
+		User user = usersRepo.findByEmail(userLogin.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+		
+		UserToReturn userToReturn = new UserToReturn();
+		userToReturn.setId(user.getId());
+		userToReturn.setFirstname(user.getFirstname());
+		userToReturn.setLastname(user.getLastname());
+		userToReturn.setEmail(user.getEmail());
 
+		return ResponseEntity.ok(userToReturn);
 	}
 
 }
