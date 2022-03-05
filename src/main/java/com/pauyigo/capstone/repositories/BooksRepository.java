@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.pauyigo.capstone.models.Books;
+import com.pauyigo.capstone.models.Book;
 
 
 @Repository
-public interface BooksRepository extends JpaRepository<Books, Integer> {
+public interface BooksRepository extends JpaRepository<Book, Integer> {
 	
-	List<Books> findByTitle(String title);
+	List<Book> findByTitle(String title);
 }

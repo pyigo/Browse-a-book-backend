@@ -1,7 +1,5 @@
 package com.pauyigo.capstone.dto;
 
-import javax.persistence.Column;
-
 public class UserToReturn {
 	private int id;
 	

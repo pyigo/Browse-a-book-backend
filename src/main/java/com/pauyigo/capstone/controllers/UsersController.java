@@ -7,11 +7,15 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +25,7 @@ import com.pauyigo.capstone.exceptions.InvalidCredentialsException;
 import com.pauyigo.capstone.exceptions.ResourceNotFoundException;
 import com.pauyigo.capstone.dto.UserLogin;
 import com.pauyigo.capstone.dto.UserToReturn;
+import com.pauyigo.capstone.dto.UserUpdate;
 import com.pauyigo.capstone.models.User;
 import com.pauyigo.capstone.repositories.UserRepository;
 
@@ -95,15 +100,16 @@ public class UsersController {
 
 		return ResponseEntity.ok(userToReturn);
 	}
-	
+
 	@PostMapping("users/login")
-	public ResponseEntity<UserToReturn> login(@RequestBody @Valid UserLogin userLogin){
-		User user = usersRepo.findByEmail(userLogin.getEmail()).orElseThrow(() -> new InvalidCredentialsException("Please enter valid credentials"));
-		
+	public ResponseEntity<UserToReturn> login(@RequestBody @Validated UserLogin userLogin) {
+		User user = usersRepo.findByEmail(userLogin.getEmail())
+				.orElseThrow(() -> new InvalidCredentialsException("Please enter valid credentials"));
+
 		if (!user.getPassword().equals(userLogin.getPassword())) {
 			throw new InvalidCredentialsException("Please enter valid credentials");
 		}
-		
+
 		UserToReturn userToReturn = new UserToReturn();
 		userToReturn.setId(user.getId());
 		userToReturn.setFirstname(user.getFirstname());
@@ -113,4 +119,34 @@ public class UsersController {
 		return ResponseEntity.ok(userToReturn);
 	}
 
+//	creating delete method
+	@DeleteMapping("users/{id}")
+	public ResponseEntity<UserToReturn> deleteUser(@PathVariable int id) {
+		User user = usersRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+		usersRepo.deleteById(id);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+//	creating update method
+	@PutMapping("users/{id}")
+	public ResponseEntity<UserToReturn> updateUser(@PathVariable int id, @RequestBody User userToUpdate){
+		User userFound = usersRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found."));	
+		
+		
+		userFound.setFirstname(userToUpdate.getFirstname());
+		userFound.setLastname(userToUpdate.getLastname());
+		
+		User updatedUser = usersRepo.save(userFound);
+		
+		UserToReturn userToReturn = new UserToReturn();
+		userToReturn.setId(updatedUser.getId());
+		userToReturn.setFirstname(updatedUser.getFirstname());
+		userToReturn.setLastname(updatedUser.getLastname());
+		userToReturn.setEmail(updatedUser.getEmail());
+
+		return  ResponseEntity.ok(userToReturn);
+	}
+	
+	
 }
