@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -132,8 +130,7 @@ public class UsersController {
 //	creating update method
 	@PutMapping("users/{id}")
 	public ResponseEntity<UserToReturn> updateUser(@PathVariable int id, @RequestBody User userToUpdate){
-		User userFound = usersRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found."));	
-		
+		User userFound = usersRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found."));
 		
 		userFound.setFirstname(userToUpdate.getFirstname());
 		userFound.setLastname(userToUpdate.getLastname());

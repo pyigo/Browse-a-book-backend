@@ -21,7 +21,7 @@ public class Book {
 	@Column
 	private String description;
 	@Column
-	private String publisedDate;
+	private String publishedDate;
 	@Column
 	private String author;
 	@Column
@@ -48,11 +48,11 @@ public class Book {
 	}
 
 	public String getPublisedDate() {
-		return publisedDate;
+		return publishedDate;
 	}
 
 	public void setPublisedDate(String publisedDate) {
-		this.publisedDate = publisedDate;
+		this.publishedDate = publisedDate;
 	}
 
 	public String getAuthor() {

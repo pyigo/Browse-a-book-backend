@@ -9,7 +9,7 @@ import com.pauyigo.capstone.models.Book;
 
 
 @Repository
-public interface BooksRepository extends JpaRepository<Book, Integer> {
+public interface BookRepository extends JpaRepository<Book, Integer> {
 	
-	List<Book> findByTitle(String title);
+	Book findByTitle(String title);
 }
