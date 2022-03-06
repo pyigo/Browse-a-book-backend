@@ -1,5 +1,8 @@
 package com.pauyigo.capstone.models;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +24,7 @@ public class Book {
 	@Column
 	private String description;
 	@Column
-	private String publishedDate;
+	private LocalDate publishedDate;
 	@Column
 	private String author;
 	@Column
@@ -47,12 +50,12 @@ public class Book {
 		this.description = description;
 	}
 
-	public String getPublisedDate() {
+	public LocalDate getPublishedDate() {
 		return publishedDate;
 	}
 
-	public void setPublisedDate(String publisedDate) {
-		this.publishedDate = publisedDate;
+	public void setPublishedDate(LocalDate publishedDate) {
+		this.publishedDate = publishedDate;
 	}
 
 	public String getAuthor() {
