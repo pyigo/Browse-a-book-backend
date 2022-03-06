@@ -121,11 +121,12 @@ public class UsersController {
 
 //	creating delete method
 	@DeleteMapping("users/{id}")
-	public ResponseEntity<UserToReturn> deleteUser(@PathVariable int id) {
+	public ResponseEntity<String> deleteUser(@PathVariable int id) {
 		User user = usersRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found."));
+		
 
 		usersRepo.deleteById(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>("Successfully deleted",HttpStatus.OK);
 	}
 
 //	creating update method
